@@ -12,7 +12,7 @@ import woowacourse.omok.model.stone.position.Row
 import woowacourse.omok.view.InputView
 import woowacourse.omok.view.OutputView
 
-class OmokControl(
+class OmokConsoleControl(
     private val inputView: InputView,
     private val outputView: OutputView,
     private val boardSize: BoardSize,

@@ -9,6 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
+import woowacourse.omok.controller.OmokAppControl
+import woowacourse.omok.model.board.BoardSize
+import kotlin.concurrent.thread
+import kotlin.math.abs
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,12 +25,28 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        val omokAppControl = OmokAppControl(this, BoardSize(BOARD_SIZE))
+
         val board = findViewById<TableLayout>(R.id.board)
-        board
-            .children
-            .filterIsInstance<TableRow>()
-            .flatMap { it.children }
-            .filterIsInstance<ImageView>()
-            .forEach { view -> view.setOnClickListener { view.setImageResource(R.drawable.black_stone) } }
+        board.children.forEachIndexed { rowIndex, rowView ->
+            if (rowView is TableRow) {
+                rowView.children.forEachIndexed { colIndex, cellView ->
+                    if (cellView is ImageView) {
+                        cellView.setTag(Pair(abs(BOARD_SIZE - INDEX_OFFSET - rowIndex), colIndex))
+                        cellView.setOnClickListener {
+                            thread {
+                                val coordinate = cellView.tag as Pair<Int, Int>
+                                omokAppControl.turn(cellView, coordinate)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    companion object {
+        private const val BOARD_SIZE = 15
+        private const val INDEX_OFFSET = 1
     }
 }
