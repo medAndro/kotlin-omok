@@ -14,7 +14,7 @@ class Board(
         get() = LinkedHashMap(_stonesMap)
 
     val lastStone: Stone?
-        get() = _stonesMap.lastEntry()?.let { Stone(it.key, it.value) }
+        get() = _stonesMap.entries.lastOrNull()?.let { Stone(it.key, it.value) }
 
     val nextStoneColor: StoneColor
         get() {
